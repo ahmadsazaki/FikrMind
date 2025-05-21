@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mind Map Explorer</title>
+    <title>FikrMinda</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
@@ -20,7 +20,7 @@
         </button>
     </header>
     <div class="container">
-        <h1>Generate Your Mindmap</h1>
+        <h1>Explore</h1>
         <div id="input-container">
             <div class="form-group">
             <label for="topic-input">Subject or Topic</label>
@@ -30,11 +30,11 @@
             <label for="purpose">Purpose of the Mindmap</label>
             <select id="purpose">
                 <option value="">Select a purpose...</option>
+                <option value="personal">Personal Learning</option>
                 <option value="research">Research Paper or Study</option>
                 <option value="exam">Exam Preparation</option>
                 <option value="teaching">Teaching or Explaining to Others</option>
-                <option value="project">Project Planning</option>
-                <option value="personal">Personal Learning</option>
+                <option value="project">Project Planning</option>               
                 <option value="brainstorming">Brainstorming Ideas</option>
                 <option value="writing">Writing (e.g., Essay, Article, Book)</option>
                 <option value="business">Business Strategy or Decision Making</option>
@@ -44,7 +44,7 @@
                 <option value="problem-solving">Problem Solving</option>
                 <option value="presentation">Presentation Preparation</option>
                 <option value="workflow">Workflow or Process Mapping</option>
-                <option value="other">Other (specify below)</option>
+                <option value="other">Others (specify below)</option>
             </select>
         </div>
         <div class="form-group">
