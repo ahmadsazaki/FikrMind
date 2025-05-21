@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Map Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.15.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.15.4"></script>
+</head>
+<body>
+    <header class="mindmap-header">
+        <button id="home-btn" class="header-btn" title="Reset and reload page">
+            <i class="fas fa-home"></i>
+        </button>
+        <button id="save-btn" class="header-btn" title="Save mindmap as HTML">
+            <i class="fas fa-save"></i>
+        </button>
+    </header>
+    <div class="container">
+        <h1>Generate Your Mindmap</h1>
+        <div id="input-container">
+            <div class="form-group">
+            <label for="topic-input">Subject or Topic</label>
+            <input type="text" id="topic-input" placeholder="e.g., Machine Learning, Climate Change, Project Management">
+        </div>
+        <div class="form-group">
+            <label for="purpose">Purpose of the Mindmap</label>
+            <select id="purpose">
+                <option value="">Select a purpose...</option>
+                <option value="research">Research Paper or Study</option>
+                <option value="exam">Exam Preparation</option>
+                <option value="teaching">Teaching or Explaining to Others</option>
+                <option value="project">Project Planning</option>
+                <option value="personal">Personal Learning</option>
+                <option value="brainstorming">Brainstorming Ideas</option>
+                <option value="writing">Writing (e.g., Essay, Article, Book)</option>
+                <option value="business">Business Strategy or Decision Making</option>
+                <option value="meeting">Meeting Notes or Discussion Summary</option>
+                <option value="goal">Goal Setting or Life Planning</option>
+                <option value="creative">Creative Projects (e.g., Design, Art)</option>
+                <option value="problem-solving">Problem Solving</option>
+                <option value="presentation">Presentation Preparation</option>
+                <option value="workflow">Workflow or Process Mapping</option>
+                <option value="other">Other (specify below)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="detail-level">Detail Level</label>
+            <select id="detail-level">
+                <option value="basic">Basic (Overview)</option>
+                <option value="balanced" selected>Balanced (Recommended)</option>
+                <option value="in-depth">In-Depth (Comprehensive)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="notes">Additional Notes or Requirements (Optional)</label>
+            <textarea id="notes" rows="5" placeholder="Add any specific areas you want covered, special considerations, or additional details to guide the mindmap generation."></textarea>
+        </div>
+            <button id="generate-btn" class="generate-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.455.212-.612.538-.728.881-.3.96-.984 1.685-1.785 2.02A.5.5 0 0 1 8.5 14.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5c-.17-.616-.452-1.056-.837-1.481-.3-.33-.62-.68-.9-.988-.202-.214-.307-.3-.614-.3-.558 0-1.007-.464-1.191-1.023A6 6 0 0 1 2 6"/>
+                </svg>
+                Generate Mindmap
+            </button>
+        </div>
+        <div id="mindmap-container" class="hidden">
+            <svg id="markmap"></svg>
+        </div>
+        <div id="loading-indicator" class="hidden">
+            <p>Loading...</p>
+        </div>
+        <div id="error-message" class="hidden">
+            <p>An error occurred.</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
