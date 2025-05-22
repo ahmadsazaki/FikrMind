@@ -190,7 +190,7 @@ Make sure the mind map is comprehensive and well-organized.`;
                 duration: 500,
                 nodeFont: '14px sans-serif',
                 colorFreezeLevel: 5,
-                initialExpandLevel: 1
+                initialExpandLevel: 2
             };
             
             if (markmapInstance) {
@@ -281,7 +281,7 @@ Make sure the mind map is comprehensive and well-organized.`;
                 duration: 500,
                 nodeFont: '14px sans-serif',
                 colorFreezeLevel: 5,
-                initialExpandLevel: 1
+                initialExpandLevel: 2
             };
             
             if (markmapInstance) {
