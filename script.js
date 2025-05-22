@@ -346,7 +346,7 @@ Make sure the mind map is comprehensive and well-organized.`;
             // Generate unique ID for this mindmap
             const mindmapId = 'mindmap-' + Date.now();
             
-            // Create HTML content with embedded markdown
+            // Create HTML content with embedded markdown and initialization
             const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
@@ -363,24 +363,20 @@ Make sure the mind map is comprehensive and well-organized.`;
             try {
                 const { Transformer, Markmap } = window.markmap;
                 const transformer = new Transformer();
-                // Embedded markdown content
+                
+                // Simple markdown transformation and rendering
                 const markdown = \`${escapedMarkdown}\`;
                 const { root } = transformer.transform(markdown);
                 
+                if (!root) {
+                    throw new Error('Failed to transform markdown');
+                }
+
                 const svg = document.querySelector('#markmap');
-                // Default color scheme if none provided
-                const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#6366f1'];
-                let colorIndex = 0;
-                
                 Markmap.create(svg, {
                     duration: 500,
                     nodeFont: '14px sans-serif',
-                    color: (node) => {
-                        // Handle cases where node or node.data is undefined
-                        if (!node?.data) return colors[colorIndex % colors.length];
-                        // Use provided color or fallback to our color scheme
-                        return node.data.color || colors[colorIndex++ % colors.length];
-                    },
+                    color: (node) => node?.data?.color || '#3b82f6',
                     paddingX: 15,
                     zoom: true,
                     pan: true,
