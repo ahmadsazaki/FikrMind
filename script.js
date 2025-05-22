@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Theme Management
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    // Set initial theme based on localStorage or OS preference
+    const currentTheme = localStorage.getItem('theme') || 
+                        (prefersDarkScheme.matches ? 'dark' : 'light');
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark');
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        themeToggleBtn.title = 'Toggle light mode';
+    }
+
+    // Theme toggle handler
+    themeToggleBtn.addEventListener('click', () => {
+        const isDark = document.body.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeToggleBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        themeToggleBtn.title = isDark ? 'Toggle light mode' : 'Toggle dark mode';
+    });
+
     // API Configuration
     const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
     const API_KEY = 'AIzaSyCV6t6EX9ImuvhajrwQmonPpookCL2mFsM'; // Replace with your actual key if needed
@@ -312,7 +333,13 @@ Make sure the mind map is comprehensive and well-organized.`;
                 .replace(/`/g, '\\`')
                 .replace(/\$/g, '\\$');
 
-            // Create HTML content following markmap's official pattern
+            // Generate unique ID for this mindmap
+            const mindmapId = 'mindmap-' + Date.now();
+            
+            // Store markdown in localStorage
+            localStorage.setItem(mindmapId, escapedMarkdown);
+            
+            // Create HTML content
             const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
@@ -329,7 +356,10 @@ Make sure the mind map is comprehensive and well-organized.`;
             try {
                 const { Transformer, Markmap } = window.markmap;
                 const transformer = new Transformer();
-                const markdown = \`${escapedMarkdown}\`;
+                // Get markdown from localStorage
+                const mindmapId = '${mindmapId}';
+                const markdown = localStorage.getItem(mindmapId);
+                if (!markdown) throw new Error('Mindmap data not found');
                 const { root } = transformer.transform(markdown);
                 
                 const svg = document.querySelector('#markmap');
