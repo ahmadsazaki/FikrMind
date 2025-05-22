@@ -346,10 +346,7 @@ Make sure the mind map is comprehensive and well-organized.`;
             // Generate unique ID for this mindmap
             const mindmapId = 'mindmap-' + Date.now();
             
-            // Store markdown in localStorage
-            localStorage.setItem(mindmapId, escapedMarkdown);
-            
-            // Create HTML content
+            // Create HTML content with embedded markdown
             const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
@@ -366,10 +363,8 @@ Make sure the mind map is comprehensive and well-organized.`;
             try {
                 const { Transformer, Markmap } = window.markmap;
                 const transformer = new Transformer();
-                // Get markdown from localStorage
-                const mindmapId = '${mindmapId}';
-                const markdown = localStorage.getItem(mindmapId);
-                if (!markdown) throw new Error('Mindmap data not found');
+                // Embedded markdown content
+                const markdown = \`${escapedMarkdown}\`;
                 const { root } = transformer.transform(markdown);
                 
                 const svg = document.querySelector('#markmap');
