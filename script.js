@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // API Configuration
-    const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-    const API_KEY = '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'; // Replace with your actual key if needed
-    const MODEL_NAME = 'llama3-8b-8192';
+    const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+    const API_KEY = 'AIzaSyCV6t6EX9ImuvhajrwQmonPpookCL2mFsM'; // Replace with your actual key if needed
+    const MODEL_NAME = 'gemini-2.0-flash';
 
     // DOM Elements
     const topicInput = document.getElementById('topic-input');
@@ -90,16 +90,13 @@ Example structure:
 
 Make sure the mind map is comprehensive and well-organized.`;
 
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: MODEL_NAME,
-                    messages: [{ role: 'user', content: markdownPrompt }],
-                    temperature: 0.7
+                    contents: [{ parts: [{ text: markdownPrompt }] }]
                 })
             });
 
@@ -109,7 +106,7 @@ Make sure the mind map is comprehensive and well-organized.`;
             }
 
             const data = await response.json();
-            const markdown = data.choices?.[0]?.message?.content?.trim();
+            const markdown = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
             renderMarkmap(markdown || '');
 
         } catch (error) {
@@ -171,7 +168,8 @@ Make sure the mind map is comprehensive and well-organized.`;
                 maxWidth: 300,
                 duration: 500,
                 nodeFont: '14px sans-serif',
-                colorFreezeLevel: 5
+                colorFreezeLevel: 5,
+                initialExpandLevel: 1
             };
             
             if (markmapInstance) {
@@ -261,7 +259,8 @@ Make sure the mind map is comprehensive and well-organized.`;
                 maxWidth: 300,
                 duration: 500,
                 nodeFont: '14px sans-serif',
-                colorFreezeLevel: 5
+                colorFreezeLevel: 5,
+                initialExpandLevel: 1
             };
             
             if (markmapInstance) {
