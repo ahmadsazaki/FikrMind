@@ -27,11 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners
     generateBtn.addEventListener('click', handleGenerateMindMap);
+    
+    // Detail level image selection
+    const detailLevelItems = document.querySelectorAll('.detail-level-item');
+    let selectedDetailLevel = 'balanced'; // Default selection
+    
+    detailLevelItems.forEach(item => {
+        const img = item.querySelector('.detail-level-img');
+        item.addEventListener('click', () => {
+            // Remove active class from all images
+            document.querySelectorAll('.detail-level-img').forEach(i => i.classList.remove('active'));
+            
+            // Add active class to clicked image
+            img.classList.add('active');
+            selectedDetailLevel = img.dataset.level;
+        });
+    });
 
     async function handleGenerateMindMap() {
         currentTopic = topicInput.value.trim();
         const purpose = document.getElementById('purpose').value;
-        const detailLevel = document.getElementById('detail-level').value;
+        const detailLevel = selectedDetailLevel;
         const notes = document.getElementById('notes').value.trim();
 
         if (!currentTopic) {

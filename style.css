@@ -181,9 +181,58 @@ h1 {
     margin-top: 60px;
 }
 
+/* Detail Level Images */
+.detail-level-images {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.detail-level-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.detail-level-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.detail-level-img {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    object-fit: cover;
+}
+
+.detail-level-img:hover {
+    border-color: #8e44ad;
+    transform: scale(1.05);
+}
+
+.detail-level-img.active {
+    border-color: #8e44ad;
+    box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.3);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .input-section h2 {
         font-size: 1.3em;
+    }
+    
+    .detail-level-img {
+        width: 30px;
+        height: 30px;
+    }
+    .detail-level-label {
+        font-size: 11px;
     }
 }

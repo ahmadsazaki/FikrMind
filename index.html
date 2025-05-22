@@ -48,12 +48,21 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="detail-level">Detail Level</label>
-            <select id="detail-level">
-                <option value="basic">Basic (Overview)</option>
-                <option value="balanced" selected>Balanced (Recommended)</option>
-                <option value="in-depth">In-Depth (Comprehensive)</option>
-            </select>
+            <label>Detail Level</label>
+            <div class="detail-level-images">
+                <div class="detail-level-item">
+                    <img src="1a.png" alt="Basic" class="detail-level-img" data-level="basic">
+                    <span class="detail-level-label">Basic</span>
+                </div>
+                <div class="detail-level-item">
+                    <img src="2a.png" alt="Balanced" class="detail-level-img active" data-level="balanced">
+                    <span class="detail-level-label">Balanced</span>
+                </div>
+                <div class="detail-level-item">
+                    <img src="3a.png" alt="In-Depth" class="detail-level-img" data-level="in-depth">
+                    <span class="detail-level-label">In-Depth</span>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label for="notes">Additional Notes or Requirements (Optional)</label>
