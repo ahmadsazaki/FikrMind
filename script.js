@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
         themeToggleBtn.title = 'Toggle light mode';
     }
 
+    // Set default purpose
+    document.getElementById('purpose').value = 'personal';
+
     // Theme toggle handler
     themeToggleBtn.addEventListener('click', () => {
         const isDark = document.body.classList.toggle('dark');
@@ -67,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function handleGenerateMindMap() {
         currentTopic = topicInput.value.trim();
-        const purpose = document.getElementById('purpose').value;
+        const purpose = document.getElementById('purpose').value || 'personal';
         const detailLevel = selectedDetailLevel;
         const notes = document.getElementById('notes').value.trim();
 
@@ -190,7 +193,7 @@ Make sure the mind map is comprehensive and well-organized.`;
                 duration: 500,
                 nodeFont: '14px sans-serif',
                 colorFreezeLevel: 5,
-                initialExpandLevel: 2
+                initialExpandLevel: 1
             };
             
             if (markmapInstance) {
@@ -248,6 +251,11 @@ Make sure the mind map is comprehensive and well-organized.`;
         inputContainer.classList.remove('hidden');
     }
 
+    function sanitizeMarkdown(markdown) {
+        // Remove markdown code block delimiters but preserve content
+        return markdown.replace(/```[a-z]*\n([\s\S]*?)\n```/g, '$1');
+    }
+
     function renderMarkmap(markdownContent) {
         const svgElement = mindmapContainer.querySelector('svg#markmap');
 
@@ -261,6 +269,8 @@ Make sure the mind map is comprehensive and well-organized.`;
         currentMarkdown = markdownContent;
 
         try {
+            // Sanitize markdown before processing
+            markdownContent = sanitizeMarkdown(markdownContent);
             const { root, features } = transformer.transform(markdownContent);
             
             if (!root || (root.content === "" && (!root.children || root.children.length === 0))) {
@@ -281,7 +291,7 @@ Make sure the mind map is comprehensive and well-organized.`;
                 duration: 500,
                 nodeFont: '14px sans-serif',
                 colorFreezeLevel: 5,
-                initialExpandLevel: 2
+                initialExpandLevel: 1
             };
             
             if (markmapInstance) {
