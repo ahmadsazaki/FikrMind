@@ -15,15 +15,37 @@
         <button id="home-btn" class="header-btn" title="Reset and reload page">
             <i class="fas fa-home"></i>
         </button>
-        <button id="save-btn" class="header-btn" title="Save mindmap as HTML">
-            <i class="fas fa-save"></i>
-        </button>
+        <div class="save-toggle-container">
+            <button id="save-btn" class="header-btn" title="Save options">
+                <i class="fas fa-save"></i>
+            </button>
+            <div class="save-popup">
+                <div class="save-header">Save Options</div>
+                <div class="save-option" data-format="html">Interactive HTML</div>
+                <div class="save-option" data-format="svg">SVG Image</div>
+                <div class="save-option" data-format="pdf">PDF Document</div>
+                <div class="save-option" data-format="jpg">JPG Image</div>
+            </div>
+        </div>
         <button id="theme-toggle-btn" class="header-btn theme-toggle-btn" title="Toggle dark mode">
             <i class="fas fa-moon"></i>
         </button>
+        <div class="history-toggle-container">
+            <button id="history-toggle-btn" class="header-btn" title="Show history">
+                <i class="fas fa-history"></i>
+            </button>
+            <span id="save-history-label" class="history-label">Save History</span>
+            <div class="history-popup">
+                <div class="history-header">Save History</div>
+                <div id="history-list"></div>
+            </div>
+        </div>
     </header>
     <div class="container">
-        <h1>Explore</h1>
+    <div style="text-align: center;">
+        <img src="fikrminda.png" alt="FikrMinda Logo" height="40">
+    </div>
+        <br>
         <div id="input-container">
             <div class="form-group">
             <label for="topic-input">Subject or Topic</label>
@@ -89,5 +111,16 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoom-in-btn" title="Zoom In">
+            <i class="fas fa-search-plus"></i>
+        </button>
+        <button class="zoom-btn" id="zoom-out-btn" title="Zoom Out">
+            <i class="fas fa-search-minus"></i>
+        </button>
+        <button class="zoom-btn" id="zoom-reset-btn" title="Reset Zoom">
+            <i class="fas fa-undo"></i>
+        </button>
+    </div>
 </body>
 </html>
