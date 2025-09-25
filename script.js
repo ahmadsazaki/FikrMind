@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // API Configuration
     const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-    const API_KEY = 'AIzaSyCV6t6EX9ImuvhajrwQmonPpookCL2mFsM'; // Replace with your actual key if needed
+    const API_KEY = 'AIzaSyBEh9v0oNzm7wjN1n5vytdTNrImRlM40Go'; // Replace with your actual key if needed
     const MODEL_NAME = 'gemini-2.0-flash';
 
     // DOM Elements
