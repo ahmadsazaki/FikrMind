@@ -18,6 +18,9 @@
         <button id="save-btn" class="header-btn" title="Save mindmap as HTML">
             <i class="fas fa-save"></i>
         </button>
+        <button id="settings-btn" class="header-btn" title="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
         <button id="theme-toggle-btn" class="header-btn theme-toggle-btn" title="Toggle dark mode">
             <i class="fas fa-moon"></i>
         </button>
@@ -91,6 +94,44 @@
             <p>An error occurred.</p>
         </div>
     </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button id="settings-close" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="api-key-input">OpenRouter API Key</label>
+                    <input type="password" id="api-key-input" placeholder="Enter your OpenRouter API key">
+                    <small class="help-text">
+                        Get your API key from <a href="https://openrouter.ai/keys" target="_blank">OpenRouter</a>
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="model-select">AI Model</label>
+                    <select id="model-select" multiple size="4">
+                        <option value="meta-llama/llama-3.3-8b-instruct:free" selected>Llama 3.3 8B (Free)</option>
+                        <option value="openai/gpt-oss-20b:free">GPT OSS 20B (Free)</option>
+                        <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                        <option value="openai/gpt-4o">GPT-4o</option>
+                    </select>
+                    <small class="help-text">
+                        Hold Ctrl/Cmd to select multiple models (fallback order)
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="settings-cancel" class="btn-secondary">Cancel</button>
+                <button id="settings-save" class="btn-primary">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

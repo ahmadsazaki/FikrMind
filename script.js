@@ -23,10 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
         themeToggleBtn.title = isDark ? 'Toggle light mode' : 'Toggle dark mode';
     });
 
-    // API Configuration
-    const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-    const API_KEY = 'AIzaSyBEh9v0oNzm7wjN1n5vytdTNrImRlM40Go'; // Replace with your actual key if needed
-    const MODEL_NAME = 'gemini-2.0-flash';
+    // API Configuration - OpenRouter with user settings
+    const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+    let OPENROUTER_API_KEY = '';
+    let OPENROUTER_MODELS = [
+        {
+            name: 'meta-llama/llama-3.3-8b-instruct:free',
+            timeout: 15000,
+            priority: 1
+        }
+    ];
+    let currentModelIndex = 0;
 
     // DOM Elements
     const topicInput = document.getElementById('topic-input');
@@ -49,8 +56,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const { Transformer } = window.markmap;
     const transformer = new Transformer();
 
+    // Settings Elements
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsClose = document.getElementById('settings-close');
+    const settingsCancel = document.getElementById('settings-cancel');
+    const settingsSave = document.getElementById('settings-save');
+    const apiKeyInput = document.getElementById('api-key-input');
+    const modelSelect = document.getElementById('model-select');
+
     // Event Listeners
     generateBtn.addEventListener('click', handleGenerateMindMap);
+    
+    // Settings Event Listeners
+    settingsBtn.addEventListener('click', openSettings);
+    settingsClose.addEventListener('click', closeSettings);
+    settingsCancel.addEventListener('click', closeSettings);
+    settingsSave.addEventListener('click', saveSettings);
+
+    // Load settings on startup
+    loadSettings();
     
     // Detail level image selection
     const detailLevelItems = document.querySelectorAll('.detail-level-item');
@@ -114,23 +139,7 @@ Example structure:
 
 Make sure the mind map is comprehensive and well-organized.`;
 
-            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: markdownPrompt }] }]
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(`API Error ${response.status}: ${errorData.error?.message || response.statusText}`);
-            }
-
-            const data = await response.json();
-            const markdown = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
+            const markdown = await makeAPIRequest(markdownPrompt);
             renderMarkmap(markdown || '');
 
         } catch (error) {
@@ -461,4 +470,200 @@ Make sure the mind map is comprehensive and well-organized.`;
             displayError('Failed to save mindmap. Please try again.');
         }
     });
+
+    // Settings Functions
+    function openSettings() {
+        // Load current settings into the form
+        const savedSettings = JSON.parse(localStorage.getItem('fikrMindSettings') || '{}');
+        
+        if (savedSettings.apiKey) {
+            apiKeyInput.value = savedSettings.apiKey;
+        } else {
+            apiKeyInput.value = '';
+        }
+        
+        if (savedSettings.selectedModels && Array.isArray(savedSettings.selectedModels)) {
+            // Clear all selections first
+            Array.from(modelSelect.options).forEach(option => {
+                option.selected = false;
+            });
+            
+            // Select the saved models
+            savedSettings.selectedModels.forEach(modelName => {
+                const option = Array.from(modelSelect.options).find(opt => opt.value === modelName);
+                if (option) {
+                    option.selected = true;
+                }
+            });
+        } else {
+            // Default selection - first free model
+            if (modelSelect.options.length > 0) {
+                modelSelect.options[0].selected = true;
+            }
+        }
+        
+        settingsModal.classList.remove('hidden');
+    }
+
+    function closeSettings() {
+        settingsModal.classList.add('hidden');
+    }
+
+    function saveSettings() {
+        const settings = {
+            apiKey: apiKeyInput.value.trim(),
+            selectedModels: Array.from(modelSelect.selectedOptions).map(option => option.value)
+        };
+        
+        // Validate settings
+        if (!settings.apiKey) {
+            displayError('Please enter an API key');
+            return;
+        }
+        
+        if (settings.selectedModels.length === 0) {
+            displayError('Please select at least one model');
+            return;
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('fikrMindSettings', JSON.stringify(settings));
+        
+        // Update the global API configuration
+        updateAPIConfiguration(settings);
+        
+        closeSettings();
+        displaySuccess('Settings saved successfully!');
+    }
+
+    function loadSettings() {
+        const savedSettings = JSON.parse(localStorage.getItem('fikrMindSettings') || '{}');
+        
+        if (savedSettings.apiKey || savedSettings.selectedModels) {
+            updateAPIConfiguration(savedSettings);
+        }
+    }
+
+    function updateAPIConfiguration(settings) {
+        // Update API key
+        if (settings.apiKey) {
+            OPENROUTER_API_KEY = settings.apiKey;
+        }
+        
+        // Update models list
+        if (settings.selectedModels && settings.selectedModels.length > 0) {
+            OPENROUTER_MODELS = settings.selectedModels.map((modelName, index) => ({
+                name: modelName,
+                timeout: index === 0 ? 30000 : 15000, // Primary model gets 30s, others 15s
+                priority: index + 1
+            }));
+        }
+        
+        // Reset current model index
+        currentModelIndex = 0;
+    }
+
+    // API Helper Functions with Sequential Fallback
+    async function makeAPIRequest(prompt) {
+        // Check if API key is configured
+        if (!OPENROUTER_API_KEY) {
+            throw new Error('Please configure your OpenRouter API key in Settings first');
+        }
+        
+        return await makeOpenRouterRequestWithFallback(prompt);
+    }
+
+    async function makeOpenRouterRequestWithFallback(prompt) {
+        // Check if API key is configured
+        if (!OPENROUTER_API_KEY) {
+            throw new Error('Please configure your OpenRouter API key in Settings first');
+        }
+        
+        // Check if models are configured
+        if (!OPENROUTER_MODELS || OPENROUTER_MODELS.length === 0) {
+            throw new Error('Please select at least one model in Settings first');
+        }
+        
+        // Try OpenRouter models in sequence
+        for (let i = currentModelIndex; i < OPENROUTER_MODELS.length; i++) {
+            const model = OPENROUTER_MODELS[i];
+            console.log(`Trying model: ${model.name} (timeout: ${model.timeout}ms)`);
+            
+            try {
+                const response = await Promise.race([
+                    makeOpenRouterRequest(prompt, model.name),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error(`Model timeout: ${model.name}`)), model.timeout)
+                    )
+                ]);
+                
+                // Success - update current model index for next request
+                currentModelIndex = i;
+                console.log(`Success with model: ${model.name}`);
+                return response;
+                
+            } catch (error) {
+                console.warn(`Model ${model.name} failed:`, error.message);
+                
+                // If this is the last OpenRouter model, throw error
+                if (i === OPENROUTER_MODELS.length - 1) {
+                    throw new Error(`All OpenRouter models failed. Last error: ${error.message}`);
+                }
+            }
+        }
+        
+        throw new Error('No available OpenRouter models');
+    }
+
+    async function makeOpenRouterRequest(prompt, modelName) {
+        const response = await fetch(OPENROUTER_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                'HTTP-Referer': window.location.origin,
+                'X-Title': 'FikrMind - Mind Map Generator'
+            },
+            body: JSON.stringify({
+                model: modelName,
+                messages: [
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ],
+                temperature: 0.7,
+                max_tokens: 2000
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            let errorMessage = `OpenRouter API Error ${response.status}: ${errorData.error?.message || response.statusText}`;
+            
+            // Provide specific guidance for common errors
+            if (response.status === 404 && errorData.error?.message?.includes('No endpoints found matching your data policy')) {
+                errorMessage += '\n\nTo fix this:\n1. Go to https://openrouter.ai/settings/privacy\n2. Enable "Free model publication" in your privacy settings\n3. Save your settings and try again';
+            } else if (response.status === 401) {
+                errorMessage += '\n\nPlease check that your API key is correct and has not expired.';
+            }
+            
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        return data.choices?.[0]?.message?.content?.trim();
+    }
+
+    // Helper function for success messages
+    function displaySuccess(message) {
+        const successElement = document.createElement('div');
+        successElement.className = 'success-message';
+        successElement.textContent = message;
+        document.body.appendChild(successElement);
+        
+        setTimeout(() => {
+            document.body.removeChild(successElement);
+        }, 3000);
+    }
 });
